@@ -20,6 +20,7 @@
 			height = document.getElementById('canvas3d').clientHeight;
 			renderer = new THREE.WebGLRenderer({antialias:true});
 			renderer.setSize(width, height);
+			document.getElementById('canvas3d').innerHTML = '';
 			document.getElementById('canvas3d').appendChild(renderer.domElement);
 			renderer.setClearColor(Math.random() * 0xffffff, 1.0);
 			camera = new THREE.PerspectiveCamera(45, width / height , 1 , 5000);
@@ -46,7 +47,6 @@
 			start_scene.add(word2);
 			start_scene.add(light);
 			renderer.render(start_scene, camera);
-			
 			for (i = 0;i < nx;i++)
 			{
 				board[i] = new Array()
@@ -128,7 +128,8 @@
 		}
 		function render()
 		{
-			
+			if (status == -1)
+				return;
 			for (var i = 0;i < len;++i)
 			{
 				cube[i].position.x = snake[i].x * 10 - 200;
@@ -151,7 +152,16 @@
 		
 		function reload_game()
 		{
-			location.reload();
+			console.log(1);
+			cube = [];
+			len = 3;
+			head_pos_x = 10, head_pos_y = 10, head_for = 2;
+			status = -1;
+			pause_flag = false;
+			board = new Array();
+			the_last_head = head_for;
+			snake = new Array();
+			Init();
 		}
 		
 		function move()
@@ -191,7 +201,7 @@
 					if (the_last_head + head_for != 3)
 					{
 						alert("game over!\ryour score is " + len);
-						location.reload();
+						reload_game();
 					}
 					else
 					{
@@ -202,7 +212,7 @@
 			else
 			{
 				alert("game over!\ryour score is " + len);
-				location.reload();
+				reload_game();
 			}
 			for (i = 0;i < nx;i++)
 			{
@@ -233,9 +243,10 @@
 		}
 		function run()
 		{
+			if (status == -1)
+				return;
 			if (!pause_flag)
-			move();
-			
+				move();
 			render();
 			setTimeout("run()", 100);//you can change speed here
 		}
